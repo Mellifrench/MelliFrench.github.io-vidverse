@@ -11,12 +11,15 @@
 </head>
 <body>
     <h1>Welcome to Vidverse</h1>
+    {% if error %}
+        <p style="color: red;">{{ error }}</p>
+    {% endif %}
     <form method="POST">
         <label>Username: <input type="text" name="username" required></label><br><br>
         <label>Password: <input type="password" name="password" required></label><br><br>
         <button type="submit">Login</button>
     </form>
-    <p>Use demo credentials: user1/password1 or user2/password2</p>
+    <p><a href="/register">Register a new account</a></p>
     <p><a href="/rules">View Vidverse Rules</a></p>
 </body>
 </html>
