@@ -13,7 +13,7 @@
 </head>
 <body>
     <h1>Vidverse - Hello, {{ user }}!</h1>
-    <a href="/logout">Logout</a> | <a href="/rules">View Rules</a>
+    <a href="/logout">Logout</a> | <a href="/rules">View Rules</a> | <a href="/profile/{{ user }}">My Profile</a>
 
     <h2>Import and Share a Video</h2>
     <input type="file" id="video-file" accept="video/*">
@@ -25,9 +25,10 @@
     <h2>Social Feed (Shared Videos)</h2>
     <div class="feed">
         {% for video in videos %}
+            {% set uploader = video.split('_')[0] %}
             <div class="video-item">
                 <video src="/videos/{{ video }}" controls width="300"></video>
-                <p>Shared video: {{ video }}</p>
+                <p>Shared by: <a href="/profile/{{ uploader }}">{{ uploader }}</a> - {{ video }}</p>
                 <button class="report-btn" data-video="{{ video }}">Report</button>
             </div>
         {% endfor %}
