@@ -112,6 +112,19 @@ def profile(username):
     
     return render_template('profile.html', profile_user=user_data[1], bio=user_data[2], videos=user_videos, is_own=is_own_profile)
 
+# Video watch page
+@app.route('/watch/<filename>')
+def watch(filename):
+    if 'user' not in session:
+        return redirect(url_for('login'))
+    
+    video_path = os.path.join(app.config['UPLOAD_FOLDER'], filename)
+    if not os.path.exists(video_path):
+        return 'Video not found', 404
+    
+    uploader = filename.split('_')[0]
+    return render_template('watch.html', filename=filename, uploader=uploader)
+
 # Rules page
 @app.route('/rules')
 def rules():
