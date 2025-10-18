@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vidverse</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; }
+        #video-preview { width: 400px; height: 300px; }
+        .feed { margin-top: 20px; }
+        .video-item { margin-bottom: 10px; }
+    </style>
+</head>
+<body>
+    <h1>Vidverse - Hello, {{ user }}!</h1>
+    <a href="/logout">Logout</a> | <a href="/rules">View Rules</a>
+
+    <h2>Import and Share a Video</h2>
+    <input type="file" id="video-file" accept="video/*">
+    <br>
+    <video id="video-preview" controls></video>
+    <br>
+    <button id="upload" disabled>Upload to Share</button>
+
+    <h2>Social Feed (Shared Videos)</h2>
+    <div class="feed">
+        {% for video in videos %}
+            <div class="video-item">
+                <video src="/videos/{{ video }}" controls width="300"></video>
+                <p>Shared video: {{ video }}</p>
+                <button class="report-btn" data-video="{{ video }}">Report</button>
+            </div>
+        {% endfor %}
+    </div>
+
+    <script>
+        const fileInput = document.getElementById('video-file');
+        const preview = document.getElementById('video-preview');
+        const uploadBtn = document.getElementById('upload');
+
+        // Preview selected video
+        fileInput.onchange = () => {
+            const file = fileInput.files[0];
+            if (file) {
+                preview.src = URL.createObjectURL(file);
+                uploadBtn.disabled = false;
+                uploadBtn.onclick = () => uploadVideo(file);
+            }
+        };
+
+        // Upload to server (share)
+        function uploadVideo(file) {
+            const formData = new FormData();
+            formData.append('video', file);
+            fetch('/upload', { method: 'POST', body: formData })
+                .then(() => location.reload())  // Refresh to see new feed
+                .catch(err => console.error('Upload error:', err));
+        }
+
+        // Report buttons
+        document.querySelectorAll('.report-btn').forEach(btn => {
+            btn.onclick = () => {
+                const video = btn.dataset.video;
+                fetch('/report', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ video })
+                })
+                .then(res => res.json())
+                .then(data => alert(data.message || data.error))
+                .catch(err => console.error('Report error:', err));
+            };
+        });
+    </script>
+</body>
+</html>
