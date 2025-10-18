@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Watch Video - {{ filename }}</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; text-align: center; }
+        video { max-width: 800px; width: 100%; }
+    </style>
+</head>
+<body>
+    <h1>Watching: {{ filename }}</h1>
+    <p>Uploaded by: <a href="/profile/{{ uploader }}">{{ uploader }}</a></p>
+    <video src="/videos/{{ filename }}" controls autoplay></video>
+    <br>
+    <button class="report-btn" data-video="{{ filename }}">Report</button>
+    <p><a href="/">Back to Feed</a></p>
+
+    <script>
+        // Report button
+        document.querySelector('.report-btn').onclick = () => {
+            const video = document.querySelector('.report-btn').dataset.video;
+            fetch('/report', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ video })
+            })
+            .then(res => res.json())
+            .then(data => alert(data.message || data.error))
+            .catch(err => console.error('Report error:', err));
+        };
+    </script>
+</body>
+</html>
