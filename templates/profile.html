@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Profile - {{ profile_user }}</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; }
+        .feed { margin-top: 20px; }
+        .video-item { margin-bottom: 10px; }
+    </style>
+</head>
+<body>
+    <h1>Profile: {{ profile_user }}</h1>
+    <p><strong>Bio:</strong> {{ bio | default('No bio yet') }}</p>
+    
+    {% if is_own %}
+        <h2>Edit Bio</h2>
+        <form method="POST">
+            <textarea name="bio" rows="4" cols="50">{{ bio }}</textarea><br>
+            <button type="submit">Save Bio</button>
+        </form>
+    {% endif %}
+    
+    <h2>{{ profile_user }}'s Videos</h2>
+    <div class="feed">
+        {% for video in videos %}
+            <div class="video-item">
+                <video src="/videos/{{ video }}" controls width="300"></video>
+                <p>{{ video }}</p>
+            </div>
+        {% endfor %}
+        {% if not videos %}
+            <p>No videos uploaded yet.</p>
+        {% endif %}
+    </div>
+    
+    <p><a href="/">Back to Home</a></p>
+</body>
+</html>
